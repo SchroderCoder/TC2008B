@@ -39,7 +39,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-
     IEnumerator MoveBossZ()
     {
         while (MovingBossZ)
@@ -115,9 +114,32 @@ public class BossController : MonoBehaviour
         }
     }
 
-    /* IEnumerator PatternThree(){
+    IEnumerator PatternThree(){
+        StartCoroutine(MoveBossZ());
+        initialDuration = 5f;
 
-    }*/
+        float startTime = Time.time;
+        float endTime = startTime + initialDuration;
+        startAngle = 0;
+        endAngle = 360;
+        bulletSpeed = 30;
+        startAngle = 90;
+        endAngle = -90;
+        firingRate = 1f;
+
+        for (numberOfBullets = 5; numberOfBullets < 10; numberOfBullets += 1)
+        {
+            while (Time.time < endTime)
+            {
+                MirrorParameters(numberOfBullets, startAngle, endAngle, bulletSpeed);
+                yield return new WaitForSeconds(firingRate);
+            }
+
+            endTime += 5;
+        }
+
+        MovingBossZ = false;
+    }
 
     void BouncyParameters(int bullets = 5, float angleStart = 0f, float angleEnd = 180f, float speedBullet = 30f) {
         float angleStep = (angleEnd - angleStart) / (bullets);
