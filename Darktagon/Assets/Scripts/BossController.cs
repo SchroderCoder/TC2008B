@@ -14,9 +14,9 @@ public class BossController : MonoBehaviour
     public float firingRate = 1f;
 
     public float initialDuration = 15f;
-    public float moveSpeedX = 5f;
+    public float moveSpeedX = 15f;
 
-    public float moveSpeedZ = 15f;
+    public float moveSpeedZ = 300f;
 
     private bool MovingBossX = true;
 
@@ -25,7 +25,7 @@ public class BossController : MonoBehaviour
     void Start()
     {
 
-        StartCoroutine(PatternTwo());
+        StartCoroutine(PatternOne());
     }
 
     IEnumerator MoveBossX()
@@ -51,9 +51,19 @@ public class BossController : MonoBehaviour
     }
     IEnumerator PatternOne() {
 
-        StartCoroutine(MoveBossX());
+        MovingBossZ = true;
+        MovingBossX = true;
 
-        Debug.Log("Coroutine Started");
+        int patternChoice = Random.Range(0, 2); // 0 or 1
+
+        if (patternChoice == 0)
+        {
+            StartCoroutine(MoveBossZ());
+        }
+        else
+        {
+            StartCoroutine(MoveBossX());
+        }
 
         initialDuration = 5f;
 
@@ -61,12 +71,10 @@ public class BossController : MonoBehaviour
         float endTime = startTime + initialDuration;
         startAngle = 0;
         endAngle = 360;
-        bulletSpeed = 30;
-        startAngle = 90;
-        endAngle = -90;
+        bulletSpeed = 29;
         firingRate = 1f;
-
-        for (numberOfBullets = 5; numberOfBullets < 10; numberOfBullets += 1)
+        
+        for (numberOfBullets = 5; numberOfBullets < 8; numberOfBullets += 1)
         {
             while (Time.time < endTime)
             {
@@ -77,18 +85,49 @@ public class BossController : MonoBehaviour
             endTime += 5;
         }
 
+        MovingBossZ = false;
         MovingBossX = false;
 
-        Debug.Log("Coroutine Ended after " + (Time.time - startTime) + " seconds");
+        yield return new WaitForSeconds(4f);
+
+
+        if (patternChoice == 0)
+        {
+            // Call PatternOne
+            yield return StartCoroutine(PatternThree());
+        }
+        else
+        {
+            // Call PatternTwo
+            yield return StartCoroutine(PatternTwo());
+        }
+
+
     }
     IEnumerator PatternTwo() {
-        int numberOfBullets = 3;
-        bulletSpeed = 60;
-        firingRate = 0.5f;
 
-        int angleChangeTime = 5; // Changed to an integer value
+        MovingBossZ = true;
+        MovingBossX = true;
+
+        int patternChoice = Random.Range(0, 2); // 0 or 1
+
+        if (patternChoice == 0)
+        {
+            StartCoroutine(MoveBossZ());
+        }
+        else
+        {
+            StartCoroutine(MoveBossX());
+        }
+
+        int numberOfBullets = 3;
+        bulletSpeed = 40;
+        firingRate = 0.7f;
+
+        int angleChangeTime = 3;
         float patternDuration = 30f;
         float patternStartTime = Time.time;
+
 
         while (Time.time - patternStartTime < patternDuration)
         {
@@ -105,41 +144,98 @@ public class BossController : MonoBehaviour
                     startAngle = Random.Range(0f, 360f);
                     endAngle = startAngle + Random.Range(22.5f, 180f);
                     startTime = Time.time;
-                    endTime = startTime + 5f;
                 }
 
                 BouncyParameters(numberOfBullets, startAngle, endAngle, bulletSpeed);
                 yield return new WaitForSeconds(firingRate);
             }
         }
-    }
-
-    IEnumerator PatternThree(){
-        StartCoroutine(MoveBossZ());
-        initialDuration = 5f;
-
-        float startTime = Time.time;
-        float endTime = startTime + initialDuration;
-        startAngle = 0;
-        endAngle = 360;
-        bulletSpeed = 30;
-        startAngle = 90;
-        endAngle = -90;
-        firingRate = 1f;
-
-        for (numberOfBullets = 5; numberOfBullets < 10; numberOfBullets += 1)
-        {
-            while (Time.time < endTime)
-            {
-                MirrorParameters(numberOfBullets, startAngle, endAngle, bulletSpeed);
-                yield return new WaitForSeconds(firingRate);
-            }
-
-            endTime += 5;
-        }
 
         MovingBossZ = false;
+        MovingBossX = false;
+
+        yield return new WaitForSeconds(4f);
+        
+
+        patternChoice = Random.Range(0, 2); // 0 or 1
+
+        if (patternChoice == 0)
+        {
+            // Call PatternOne
+            yield return StartCoroutine(PatternOne());
+        }
+        else
+        {
+            // Call PatternTwo
+            yield return StartCoroutine(PatternThree());
+        }
     }
+
+    IEnumerator PatternThree() {
+    
+    MovingBossZ = true;
+    MovingBossX = true;
+
+    int patternChoice = Random.Range(0, 2); // 0 or 1
+
+    if (patternChoice == 0)
+    {
+        StartCoroutine(MoveBossZ());
+    }
+    else
+    {
+        StartCoroutine(MoveBossX());
+    }
+
+    firingRate = 0.5f;
+    initialDuration = 2f;
+    float patternDuration = 30f;
+    startAngle = 0;
+    endAngle = 360;
+    float addAngle = 0f;
+    int numberOfBullets = 4;
+    float startTime = Time.time;
+    bulletSpeed = 30f;
+    float patternStartTime = Time.time;
+    float startAngleN = 45f;    
+    float endAngleN = 405f;
+    float bulletSpeedN = 20f;
+    int numberOfBulletsN = 4;
+    float addAngleN = 0f;
+    float angleChangeTime = 0.05f;
+    float firingRateN = 0.05f;
+
+    while (Time.time - patternStartTime < patternDuration) {
+
+        MirrorParameters(numberOfBullets, startAngle + addAngle, endAngle + addAngle, bulletSpeed);
+        NormalParameters(numberOfBulletsN, startAngleN, endAngleN, bulletSpeedN);
+
+        addAngle = 0f;
+        
+        yield return new WaitForSeconds(firingRate);
+
+        addAngleN = 0f;
+        yield return new WaitForSeconds(firingRateN);
+    }
+
+    MovingBossZ = false;
+    MovingBossX = false;
+
+    patternChoice = Random.Range(0, 2); // 0 or 1
+
+        if (patternChoice == 0)
+        {
+            // Call PatternOne
+            yield return StartCoroutine(PatternOne());
+        }
+        else
+        {
+            // Call PatternTwo
+            yield return StartCoroutine(PatternTwo());
+        }
+
+}
+
 
     void BouncyParameters(int bullets = 5, float angleStart = 0f, float angleEnd = 180f, float speedBullet = 30f) {
         float angleStep = (angleEnd - angleStart) / (bullets);
